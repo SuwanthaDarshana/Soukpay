@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -114,6 +114,14 @@ export default function HistoryScreen() {
     );
   }
 
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const filteredTransactions = searchQuery.trim()
+    ? transactions.filter((t) =>
+        t.reason.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : transactions;
+
   const isInitialLoading = isRefreshing && transactions.length === 0;
 
   return (
@@ -158,10 +166,16 @@ export default function HistoryScreen() {
           style={styles.searchInput}
           placeholder="Search History"
           placeholderTextColor={Colors.textMuted}
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          returnKeyType="search"
+          clearButtonMode="while-editing"
         />
-        <TouchableOpacity>
-          <Ionicons name="options-outline" size={18} color={Colors.textMuted} />
-        </TouchableOpacity>
+        {searchQuery.length > 0 && (
+          <TouchableOpacity onPress={() => setSearchQuery('')}>
+            <Ionicons name="close-circle" size={18} color={Colors.textMuted} />
+          </TouchableOpacity>
+        )}
       </View>
 
       {/* Transaction List */}
@@ -173,15 +187,17 @@ export default function HistoryScreen() {
         </View>
       ) : (
         <FlatList
-          data={transactions}
+          data={filteredTransactions}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => <TransactionItem item={item} />}
           ListHeaderComponent={
-            transactions.length > 0 ? (
+            filteredTransactions.length > 0 ? (
               <View style={styles.listHeader}>
-                <Text style={styles.listHeaderLeft}>Recent Activity</Text>
+                <Text style={styles.listHeaderLeft}>
+                  {searchQuery ? `Results for "${searchQuery}"` : 'Recent Activity'}
+                </Text>
                 <Text style={styles.listHeaderRight}>
-                  {getMonthYear(transactions[0]?.created_at ?? new Date().toISOString())}
+                  {getMonthYear(filteredTransactions[0]?.created_at ?? new Date().toISOString())}
                 </Text>
               </View>
             ) : null

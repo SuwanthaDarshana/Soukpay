@@ -1,0 +1,33 @@
+{
+  "expo": {
+    "name": "SoukPay",
+    "slug": "soukpay",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "scheme": "soukpay",
+    "splash": {
+      "backgroundColor": "#0D1B3E"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.soukpay.app"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#0D1B3E"
+      },
+      "package": "com.soukpay.app"
+    },
+    "web": {
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-secure-store"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}

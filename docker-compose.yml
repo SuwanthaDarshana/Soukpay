@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: soukpay_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: soukpay_db
+    ports:
+      - '5435:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres -d soukpay_db']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: soukpay_backend
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://postgres:root@postgres:5432/soukpay_db
+      JWT_SECRET: soukpay-super-secret-jwt-key-2024-change-in-production
+      JWT_EXPIRES_IN: 7d
+      PORT: 3000
+    ports:
+      - '3000:3000'
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: sh -c "npx prisma db push && npx ts-node --transpile-only prisma/seed.ts && npm run dev"
+
+volumes:
+  pgdata:

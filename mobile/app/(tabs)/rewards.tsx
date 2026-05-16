@@ -31,14 +31,16 @@ function StockBadge({ stock }: { stock: number }) {
 function RewardCard({
   reward,
   canAfford,
+  isOnline,
   onPress,
 }: {
   reward: Reward;
   canAfford: boolean;
+  isOnline: boolean;
   onPress: () => void;
 }) {
   const isOutOfStock = reward.stock_remaining === 0;
-  const isDisabled = !canAfford || isOutOfStock;
+  const isDisabled = !canAfford || isOutOfStock || !isOnline;
 
   return (
     <View style={[styles.card, isDisabled && styles.cardDisabled]}>
@@ -194,6 +196,7 @@ export default function RewardsScreen() {
     (s) => s.rewards
   );
   const { profile } = useAppSelector((s) => s.user);
+  const isOnline = useAppSelector((s) => s.network.isOnline);
   const balance = profile?.balance ?? 0;
 
   const [selectedReward, setSelectedReward] = useState<Reward | null>(null);
@@ -279,6 +282,7 @@ export default function RewardsScreen() {
             <RewardCard
               reward={item}
               canAfford={balance >= item.points_cost}
+              isOnline={isOnline}
               onPress={() => handleSelectReward(item)}
             />
           )}

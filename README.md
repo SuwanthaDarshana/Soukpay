@@ -62,10 +62,16 @@ export const BASE_URL = 'http://192.168.1.XXX:3000';
 ```bash
 cd mobile
 npm install
+npx expo install react-native-web react-dom  # required for web support
 npx expo start
 ```
 
-Scan the QR code with Expo Go, or press `i` for iOS simulator / `a` for Android emulator.
+| Key | Action |
+|---|---|
+| `w` | Open in web browser |
+| `a` | Open on Android emulator |
+| `i` | Open on iOS simulator |
+| Scan QR | Open in Expo Go on physical device |
 
 ---
 
@@ -139,14 +145,14 @@ Tests cover:
 
 - **Skeleton Loaders**: Pulsing skeleton placeholders replace spinners while data loads, matching the content layout.
 
+- **Offline Detection**: On native, `expo-network`'s `addNetworkStateListener` fires instantly when connectivity changes. On web, the browser's `window online/offline` events are used instead. A red banner slides down from the top of every screen when offline, and the Redeem button is disabled.
+
 ---
 
 ## What I'd Add With More Time
 
 - **Token refresh flow**: Silently refresh the JWT 1 hour before expiry using a background task.
-- **Real reward images**: Integrate Unsplash or serve static images from the backend instead of icon placeholders.
-- **Offline mode**: `expo-network` integration to detect connectivity and show a banner + disable the Redeem button.
-- **Leaderboard screen**: A 4th tab showing the top 10 users with rank badges.
+- **Leaderboard screen**: A 4th tab showing the top 10 users with rank badges (the `/rewards/leaderboard` API endpoint is already built).
 - **Biometric auth**: Use `expo-local-authentication` to re-authenticate before redemption.
 - **E2E tests**: Detox tests for the full login → redeem flow.
 - **CI/CD**: GitHub Actions pipeline running `npm test` on each PR.

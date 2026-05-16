@@ -8,7 +8,7 @@ function daysAgo(n: number): Date {
 }
 
 async function main() {
-  console.log('🌱 Seeding database...');
+  console.log('Seeding database...');
 
   await prisma.redemption.deleteMany();
   await prisma.pointLedger.deleteMany();
